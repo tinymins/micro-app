@@ -80,7 +80,7 @@ function flatChildren (
  * @param app app
  */
 export function extractSourceDom (htmlStr: string, app: AppInterface): void {
-  const wrapElement = app.getDOMParser().parseFromString(htmlStr, 'text/html').body
+  const wrapElement = app.parseHtmlString(htmlStr)
   const microAppHead = globalEnv.rawElementQuerySelector.call(wrapElement, 'micro-app-head')
   const microAppBody = globalEnv.rawElementQuerySelector.call(wrapElement, 'micro-app-body')
 
@@ -102,14 +102,14 @@ export function extractSourceDom (htmlStr: string, app: AppInterface): void {
   if (app.source.links.size) {
     fetchLinksFromHtml(wrapElement, app, microAppHead, fiberStyleResult)
   } else if (fiberStyleResult) {
-    fiberStyleResult.then(() => app.onLoad(wrapElement))
+    fiberStyleResult.then(() => app.onLoad({ html: wrapElement }))
   } else {
-    app.onLoad(wrapElement)
+    app.onLoad({ html: wrapElement })
   }
 
   if (app.source.scripts.size) {
     fetchScriptsFromHtml(wrapElement, app)
   } else {
-    app.onLoad(wrapElement)
+    app.onLoad({ html: wrapElement })
   }
 }

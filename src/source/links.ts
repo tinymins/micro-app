@@ -96,7 +96,7 @@ export function extractLinkFromHtml (
     } else {
       return { address: href, linkInfo }
     }
-  } else if (rel && ['prefetch', 'preload', 'prerender'].includes(rel)) {
+  } else if (rel && ['prefetch', 'preload', 'prerender', 'modulepreload'].includes(rel)) {
     // preload prefetch prerender ....
     if (isDynamic) {
       replaceComment = document.createComment(`link element with rel=${rel}${href ? ' & href=' + href : ''} removed by micro-app`)
@@ -152,11 +152,11 @@ export function fetchLinksFromHtml (
      */
     if (fiberStyleResult) {
       fiberStyleResult.then(() => {
-        fiberLinkTasks!.push(() => Promise.resolve(app.onLoad(wrapElement)))
+        fiberLinkTasks!.push(() => Promise.resolve(app.onLoad({ html: wrapElement })))
         serialExecFiberTasks(fiberLinkTasks)
       })
     } else {
-      app.onLoad(wrapElement)
+      app.onLoad({ html: wrapElement })
     }
   })
 }
